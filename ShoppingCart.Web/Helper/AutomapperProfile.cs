@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using ShoppingCart.DataAccess.Model;
-using ShoppingCart.Web.ViewModels;
+using ShoppingCart.Web.ViewModels.CategoryViewModels;
 
 namespace ShoppingCart.Web.Helper
 {
@@ -10,6 +10,10 @@ namespace ShoppingCart.Web.Helper
         public AutomapperProfile()
         {
             CreateMap<Category, CategoryViewModel>();
+            CreateMap<Category, EditCategoryViewModel>().ReverseMap();
+            CreateMap<Category, DetailCategoryViewModel>();
+            CreateMap<Category, DeleteCategoryViewModel>().ReverseMap();
+            CreateMap<CreateCategoryViewModel, Category>();
         }
     }
 }

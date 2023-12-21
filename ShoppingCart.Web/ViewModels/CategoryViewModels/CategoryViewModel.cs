@@ -1,4 +1,4 @@
-﻿namespace ShoppingCart.Web.ViewModels
+﻿namespace ShoppingCart.Web.ViewModels.CategoryViewModels
 {
     public class CategoryViewModel
     {

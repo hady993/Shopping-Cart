@@ -34,9 +34,17 @@ namespace ShoppingCart.Service.Repositories
             return _context.Products.Include(x => x.Categories).ThenInclude(y => y.Category).FirstOrDefault(p => p.Id == id);
         }
 
-        public void InsertProduct(Product product)
+        public void InsertProduct(Product product, IEnumerable<int> categories)
         {
-            //_context.Products.Add(product);
+            foreach (var item in categories)
+            {
+                product.Categories.Add(new ProductCategory()
+                {
+                    Product = product,
+                    CategoryId = item
+                });
+            }
+            _context.Products.Add(product);
         }
 
         public void Save()

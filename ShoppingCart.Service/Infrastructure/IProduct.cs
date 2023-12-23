@@ -11,7 +11,7 @@ namespace ShoppingCart.Service.Infrastructure
     {
         List<Product> GetAllProducts();
         Product GetProductById(int id);
-        void InsertProduct(Product product);
+        void InsertProduct(Product product, IEnumerable<int> categories);
         void UpdateProduct(Product product);
         void DeleteProduct(Product product);
         void Save();

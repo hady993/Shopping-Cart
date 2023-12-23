@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore;
+using ShoppingCart.Service.Data;
 using ShoppingCart.Service.Infrastructure;
 using ShoppingCart.Service.Repositories;
 using ShoppingCart.Web.Helper;
@@ -6,6 +8,13 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+// Add DbContext.
+builder.Services.AddDbContextPool<ApplicationDbContext>
+(
+    options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),
+    b => b.MigrationsAssembly("ShoppingCart.Service")
+));
 
 // Add DI.
 builder.Services.AddTransient<ICategory, CategoryRepo>();

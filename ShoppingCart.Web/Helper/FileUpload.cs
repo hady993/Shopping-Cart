@@ -1,4 +1,6 @@
-﻿namespace ShoppingCart.Web.Helper
+﻿using Microsoft.AspNetCore.StaticFiles;
+
+namespace ShoppingCart.Web.Helper
 {
     public class FileUpload
     {
@@ -25,6 +27,28 @@
             }
 
             return fileName;
+        }
+
+        public void DeleteFile(string fileName)
+        {
+            if (fileName != null)
+            {
+                string filePath = Path.Combine(_environment.WebRootPath, "images", fileName);
+
+                if (File.Exists(filePath))
+                {
+                    File.Delete(filePath);
+                }
+            }
+        }
+
+        public string UpdateFile(string oldFileName, IFormFile newFile)
+        {
+            // First: Delete the old file!
+            DeleteFile(oldFileName);
+
+            // Then: Add the new file!
+            return UploadFile(newFile);
         }
     }
 }

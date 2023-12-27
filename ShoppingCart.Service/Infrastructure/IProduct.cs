@@ -12,7 +12,7 @@ namespace ShoppingCart.Service.Infrastructure
         List<Product> GetAllProducts();
         Product GetProductById(int id);
         void InsertProduct(Product product, IEnumerable<int> categories);
-        void UpdateProduct(Product product);
+        void UpdateProduct(Product product, IEnumerable<int> categories);
         void DeleteProduct(Product product);
         void Save();
     }

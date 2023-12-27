@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using ShoppingCart.DataAccess.Model;
 using ShoppingCart.Web.ViewModels.CategoryViewModels;
 using ShoppingCart.Web.ViewModels.ProductViewModels;
@@ -23,6 +24,7 @@ namespace ShoppingCart.Web.Helper
                 opt => opt.MapFrom(src => src.Categories.Select(y => y.Category).ToList())
             );
             CreateMap<ProductPostViewModel, Product>();
+            CreateMap<EditProductPostViewModel, Product>();
         }
     }
 }

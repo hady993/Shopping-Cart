@@ -52,9 +52,31 @@ namespace ShoppingCart.Service.Repositories
             _context.SaveChanges();
         }
 
-        public void UpdateProduct(Product product)
+        public void UpdateProduct(Product product, IEnumerable<int> categories)
         {
-            //_context.Products.Update(product);
+            var existingProduct = _context.Products.Include(x => x.Categories).FirstOrDefault(p => p.Id == product.Id);
+
+            if (existingProduct != null)
+            {
+                // Update scalar properties
+                existingProduct.Name = product.Name;
+                existingProduct.Price = product.Price;
+                existingProduct.Description = product.Description;
+                existingProduct.ProductImage = product.ProductImage;
+
+                // Delete old categories!
+                existingProduct.Categories.Clear();
+
+                // Add the new categories!
+                foreach (var item in categories)
+                {
+                    existingProduct.Categories.Add(new ProductCategory()
+                    {
+                        Product = existingProduct,
+                        CategoryId = item
+                    });
+                }
+            }
         }
     }
 }

@@ -25,6 +25,7 @@ namespace ShoppingCart.Web.Helper
             );
             CreateMap<ProductPostViewModel, Product>();
             CreateMap<EditProductPostViewModel, Product>();
+            CreateMap<DeleteProductViewModel, Product>().ReverseMap();
         }
     }
 }

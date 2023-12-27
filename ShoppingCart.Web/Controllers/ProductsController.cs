@@ -67,7 +67,7 @@ namespace ShoppingCart.Web.Controllers
             var mappedProduct = _mapper.Map<Product>(product);
             _product.InsertProduct(mappedProduct, selectedCategories);
             _product.Save();
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", "Products");
         }
 
         [HttpGet]
@@ -128,7 +128,31 @@ namespace ShoppingCart.Web.Controllers
             _product.UpdateProduct(updatedProduct, selectedCategories);
             _product.Save();
 
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", "Products");
+        }
+
+        [HttpGet]
+        public IActionResult Delete(int id)
+        {
+            var product = _product.GetProductById(id);
+            var mappedProduct = _mapper.Map<DeleteProductViewModel>(product);
+            return View(mappedProduct);
+        }
+
+        [HttpPost]
+        public IActionResult Delete(DeleteProductViewModel vm)
+        {
+            var product = _product.GetProductById(vm.Id);
+
+            // To delete product's image!
+            FileUpload file = new FileUpload(_webHostEnvironment);
+            file.DeleteFile(product.ProductImage);
+
+            // To delete the product from db!
+            _product.DeleteProduct(product);
+            _product.Save();
+
+            return RedirectToAction("Index", "Products");
         }
     }
 }

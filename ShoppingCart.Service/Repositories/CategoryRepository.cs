@@ -4,11 +4,11 @@ using ShoppingCart.Service.Infrastructure;
 
 namespace ShoppingCart.Service.Repositories
 {
-    public class CategoryRepo : ICategory
+    public class CategoryRepository : ICategoryRepository
     {
         private readonly ApplicationDbContext _context;
 
-        public CategoryRepo(ApplicationDbContext context)
+        public CategoryRepository(ApplicationDbContext context)
         {
             _context = context;
         }
@@ -31,11 +31,6 @@ namespace ShoppingCart.Service.Repositories
         public void InsertCategory(Category category)
         {
             _context.Categories.Add(category);
-        }
-
-        public void Save()
-        {
-            _context.SaveChanges();
         }
 
         public void UpdateCategory(Category category)

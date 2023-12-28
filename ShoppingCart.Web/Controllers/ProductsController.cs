@@ -10,23 +10,21 @@ namespace ShoppingCart.Web.Controllers
 {
     public class ProductsController : Controller
     {
-        private readonly IProduct _product;
+        private readonly IUnitOfWork _unitOfWork;
         private IMapper _mapper;
-        private readonly ICategory _category;
         private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public ProductsController(IProduct product, IMapper mapper, ICategory category, IWebHostEnvironment webHostEnvironment)
+        public ProductsController(IUnitOfWork unitOfWork, IMapper mapper, IWebHostEnvironment webHostEnvironment)
         {
-            _product = product;
+            _unitOfWork = unitOfWork;
             _mapper = mapper;
-            _category = category;
             _webHostEnvironment = webHostEnvironment;
         }
 
         [HttpGet]
         public IActionResult Index()
         {
-            var productList = _product.GetAllProducts();
+            var productList = _unitOfWork.ProductRepository.GetAllProducts();
             var mappedProducts = _mapper.Map<List<ProductViewModel>>(productList);
             return View(mappedProducts);
         }
@@ -34,7 +32,7 @@ namespace ShoppingCart.Web.Controllers
         [HttpGet]
         public IActionResult Details(int id)
         {
-            var singleProduct = _product.GetProductById(id);
+            var singleProduct = _unitOfWork.ProductRepository.GetProductById(id);
             var mappedProduct = _mapper.Map<ProductDetailViewModel>(singleProduct);
             return View(mappedProduct);
         }
@@ -43,7 +41,7 @@ namespace ShoppingCart.Web.Controllers
         public IActionResult Create()
         {
             CreateProductViewModel vm = new CreateProductViewModel();
-            vm.Categories = _category.GetAllCategories().Select(x => new SelectListItem()
+            vm.Categories = _unitOfWork.CategoryRepository.GetAllCategories().Select(x => new SelectListItem()
             {
                 Text = x.Name,
                 Value = x.Id.ToString()
@@ -65,15 +63,15 @@ namespace ShoppingCart.Web.Controllers
                 ProductImage = ImageFile
             };
             var mappedProduct = _mapper.Map<Product>(product);
-            _product.InsertProduct(mappedProduct, selectedCategories);
-            _product.Save();
+            _unitOfWork.ProductRepository.InsertProduct(mappedProduct, selectedCategories);
+            _unitOfWork.Save();
             return RedirectToAction("Index", "Products");
         }
 
         [HttpGet]
         public IActionResult Edit(int id)
         {
-            var product = _product.GetProductById(id);
+            var product = _unitOfWork.ProductRepository.GetProductById(id);
             FileUpload fileUpload = new FileUpload(_webHostEnvironment);
             EditProductViewModel vm = new EditProductViewModel
             {
@@ -82,7 +80,7 @@ namespace ShoppingCart.Web.Controllers
                 Price = product.Price,
                 Description = product.Description
             };
-            vm.Categories = _category.GetAllCategories().Select(x => new SelectListItem
+            vm.Categories = _unitOfWork.CategoryRepository.GetAllCategories().Select(x => new SelectListItem
             {
                 Text = x.Name,
                 Value = x.Id.ToString(),
@@ -98,7 +96,7 @@ namespace ShoppingCart.Web.Controllers
             if (!ModelState.IsValid)
             {
                 // If model validation fails, return to the edit view with validation errors
-                vm.Categories = _category.GetAllCategories().Select(x => new SelectListItem
+                vm.Categories = _unitOfWork.CategoryRepository.GetAllCategories().Select(x => new SelectListItem
                 {
                     Text = x.Name,
                     Value = x.Id.ToString(),
@@ -110,7 +108,7 @@ namespace ShoppingCart.Web.Controllers
 
             // If the edit succeeded!
             FileUpload fileUpload = new FileUpload(_webHostEnvironment);
-            string oldImgPath = _product.GetProductById(vm.Id).ProductImage;
+            string oldImgPath = _unitOfWork.ProductRepository.GetProductById(vm.Id).ProductImage;
             string newImageFile = fileUpload.UpdateFile(oldImgPath, vm.ProductImage);
 
             var selectedCategories = vm.Categories.Where(x => x.Selected).Select(x => x.Value).Select(int.Parse);
@@ -125,8 +123,8 @@ namespace ShoppingCart.Web.Controllers
             var updatedProduct = _mapper.Map<Product>(product);
 
             updatedProduct.ProductImage = newImageFile;
-            _product.UpdateProduct(updatedProduct, selectedCategories);
-            _product.Save();
+            _unitOfWork.ProductRepository.UpdateProduct(updatedProduct, selectedCategories);
+            _unitOfWork.Save();
 
             return RedirectToAction("Index", "Products");
         }
@@ -134,7 +132,7 @@ namespace ShoppingCart.Web.Controllers
         [HttpGet]
         public IActionResult Delete(int id)
         {
-            var product = _product.GetProductById(id);
+            var product = _unitOfWork.ProductRepository.GetProductById(id);
             var mappedProduct = _mapper.Map<DeleteProductViewModel>(product);
             return View(mappedProduct);
         }
@@ -142,15 +140,15 @@ namespace ShoppingCart.Web.Controllers
         [HttpPost]
         public IActionResult Delete(DeleteProductViewModel vm)
         {
-            var product = _product.GetProductById(vm.Id);
+            var product = _unitOfWork.ProductRepository.GetProductById(vm.Id);
 
             // To delete product's image!
             FileUpload file = new FileUpload(_webHostEnvironment);
             file.DeleteFile(product.ProductImage);
 
             // To delete the product from db!
-            _product.DeleteProduct(product);
-            _product.Save();
+            _unitOfWork.ProductRepository.DeleteProduct(product);
+            _unitOfWork.Save();
 
             return RedirectToAction("Index", "Products");
         }

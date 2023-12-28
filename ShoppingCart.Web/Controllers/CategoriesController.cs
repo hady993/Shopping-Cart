@@ -8,19 +8,19 @@ namespace ShoppingCart.Web.Controllers
 {
     public class CategoriesController : Controller
     {
-        private readonly ICategory _category;
+        private readonly IUnitOfWork _unitOfWork;
         private IMapper _mapper;
 
-        public CategoriesController(ICategory category, IMapper mapper)
+        public CategoriesController(IUnitOfWork unitOfWork, IMapper mapper)
         {
-            _category = category;
+            _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
 
         [HttpGet]
         public IActionResult Index()
         {
-            var allCategories = _category.GetAllCategories();
+            var allCategories = _unitOfWork.CategoryRepository.GetAllCategories();
             var mappedCategories = _mapper.Map<List<CategoryViewModel>>(allCategories);
             return View(mappedCategories);
         }
@@ -34,7 +34,7 @@ namespace ShoppingCart.Web.Controllers
         [HttpGet]
         public IActionResult Edit(int id)
         {
-            var category = _category.GetCategoryById(id);
+            var category = _unitOfWork.CategoryRepository.GetCategoryById(id);
             var mappedCategory = _mapper.Map<EditCategoryViewModel>(category);
             return View(mappedCategory);
         }
@@ -42,7 +42,7 @@ namespace ShoppingCart.Web.Controllers
         [HttpGet]
         public IActionResult Details(int id)
         {
-            var category = _category.GetCategoryById(id);
+            var category = _unitOfWork.CategoryRepository.GetCategoryById(id);
             var mappedCategory = _mapper.Map<DetailCategoryViewModel>(category);
             return View(mappedCategory);
         }
@@ -50,7 +50,7 @@ namespace ShoppingCart.Web.Controllers
         [HttpGet]
         public IActionResult Delete(int id)
         {
-            var category = _category.GetCategoryById(id);
+            var category = _unitOfWork.CategoryRepository.GetCategoryById(id);
             var mappedCategory = _mapper.Map<DeleteCategoryViewModel>(category);
             return View(mappedCategory);
         }
@@ -59,8 +59,8 @@ namespace ShoppingCart.Web.Controllers
         public IActionResult Delete(DeleteCategoryViewModel vm)
         {
             var mappedCategoryInModel = _mapper.Map<Category>(vm);
-            _category.DeleteCategory(mappedCategoryInModel);
-            _category.Save();
+            _unitOfWork.CategoryRepository.DeleteCategory(mappedCategoryInModel);
+            _unitOfWork.Save();
             return RedirectToAction("Index", "Categories");
         }
 
@@ -68,8 +68,8 @@ namespace ShoppingCart.Web.Controllers
         public IActionResult Edit(EditCategoryViewModel vm)
         {
             var mappedCategoryInModel = _mapper.Map<Category>(vm);
-            _category.UpdateCategory(mappedCategoryInModel);
-            _category.Save();
+            _unitOfWork.CategoryRepository.UpdateCategory(mappedCategoryInModel);
+            _unitOfWork.Save();
             return RedirectToAction("Index", "Categories");
         }
 
@@ -77,8 +77,8 @@ namespace ShoppingCart.Web.Controllers
         public IActionResult Create(CreateCategoryViewModel vm)
         {
             var mappedCategoryInModel = _mapper.Map<Category>(vm);
-            _category.InsertCategory(mappedCategoryInModel);
-            _category.Save();
+            _unitOfWork.CategoryRepository.InsertCategory(mappedCategoryInModel);
+            _unitOfWork.Save();
             return RedirectToAction("Index", "Categories");
         }
     }

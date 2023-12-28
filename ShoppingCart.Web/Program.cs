@@ -17,8 +17,9 @@ builder.Services.AddDbContextPool<ApplicationDbContext>
 ));
 
 // Add DI.
-builder.Services.AddTransient<ICategory, CategoryRepo>();
-builder.Services.AddTransient<IProduct, ProductRepo>();
+builder.Services.AddTransient<ICategoryRepository, CategoryRepository>();
+builder.Services.AddTransient<IProductRepository, ProductRepository>();
+builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
 
 // Add AutoMapper.
 var config = new AutoMapper.MapperConfiguration(cfg =>

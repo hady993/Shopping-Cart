@@ -1,6 +1,6 @@
 ﻿using ShoppingCart.DataAccess.Model;
 
-namespace ShoppingCart.Service.Infrastructure
+namespace ShoppingCart.Repository.Infrastructure
 {
     public interface ICategoryRepository
     {

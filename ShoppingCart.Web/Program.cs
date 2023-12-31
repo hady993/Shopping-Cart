@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using ShoppingCart.Service.Data;
-using ShoppingCart.Service.Infrastructure;
-using ShoppingCart.Service.Repositories;
+using ShoppingCart.Repository.Data;
+using ShoppingCart.Repository.Infrastructure;
+using ShoppingCart.Repository.Repositories;
 using ShoppingCart.Web.Helper;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,7 +13,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContextPool<ApplicationDbContext>
 (
     options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),
-    b => b.MigrationsAssembly("ShoppingCart.Service")
+    b => b.MigrationsAssembly("ShoppingCart.Repository")
 ));
 
 // Add DI.

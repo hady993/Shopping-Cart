@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using ShoppingCart.DataAccess.Model;
-using ShoppingCart.Service.Infrastructure;
+using ShoppingCart.Repository.Infrastructure;
 using ShoppingCart.Web.Helper;
 using ShoppingCart.Web.ViewModels.ProductViewModels;
 

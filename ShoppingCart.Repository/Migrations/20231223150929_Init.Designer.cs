@@ -4,11 +4,12 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using ShoppingCart.Service.Data;
+using ShoppingCart.Repository.Data;
+
 
 #nullable disable
 
-namespace ShoppingCart.Service.Migrations
+namespace ShoppingCart.Repository.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     [Migration("20231223150929_Init")]

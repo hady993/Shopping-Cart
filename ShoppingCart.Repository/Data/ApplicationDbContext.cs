@@ -1,12 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ShoppingCart.DataAccess.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace ShoppingCart.Service.Data
+namespace ShoppingCart.Repository.Data
 {
     public class ApplicationDbContext : DbContext
     {

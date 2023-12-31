@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace ShoppingCart.Service.Migrations
+namespace ShoppingCart.Repository.Migrations
 {
     /// <inheritdoc />
     public partial class Init : Migration

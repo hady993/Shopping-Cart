@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using ShoppingCart.DataAccess.Model;
-using ShoppingCart.Service.Infrastructure;
+using ShoppingCart.Repository.Infrastructure;
 using ShoppingCart.Web.ViewModels.CategoryViewModels;
 
 namespace ShoppingCart.Web.Controllers

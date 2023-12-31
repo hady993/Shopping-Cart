@@ -8,7 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ShoppingCart.DataAccess\ShoppingCart.DataAccess.csproj" />
-    <ProjectReference Include="..\ShoppingCart.Service\ShoppingCart.Service.csproj" />
+    <ProjectReference Include="..\ShoppingCart.Repository\ShoppingCart.Repository.csproj" />
   </ItemGroup>
 
   <ItemGroup>

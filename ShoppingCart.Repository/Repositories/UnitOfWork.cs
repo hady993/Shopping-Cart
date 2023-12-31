@@ -1,7 +1,7 @@
-﻿using ShoppingCart.Service.Data;
-using ShoppingCart.Service.Infrastructure;
+﻿using ShoppingCart.Repository.Data;
+using ShoppingCart.Repository.Infrastructure;
 
-namespace ShoppingCart.Service.Repositories
+namespace ShoppingCart.Repository.Repositories
 {
     public class UnitOfWork : IUnitOfWork
     {

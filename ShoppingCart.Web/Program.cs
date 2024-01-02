@@ -2,6 +2,8 @@ using Microsoft.EntityFrameworkCore;
 using ShoppingCart.Repository.Data;
 using ShoppingCart.Repository.Infrastructure;
 using ShoppingCart.Repository.Repositories;
+using ShoppingCart.Service.Infrastructure;
+using ShoppingCart.Service.Services;
 using ShoppingCart.Web.Helper;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,6 +22,8 @@ builder.Services.AddDbContextPool<ApplicationDbContext>
 builder.Services.AddTransient<ICategoryRepository, CategoryRepository>();
 builder.Services.AddTransient<IProductRepository, ProductRepository>();
 builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
+builder.Services.AddTransient<ICategoryService, CategoryService>();
+builder.Services.AddTransient<IProductService, ProductService>();
 
 // Add AutoMapper.
 var config = new AutoMapper.MapperConfiguration(cfg =>

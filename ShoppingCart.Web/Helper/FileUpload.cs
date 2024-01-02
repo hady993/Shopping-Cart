@@ -1,23 +1,14 @@
-﻿using Microsoft.AspNetCore.StaticFiles;
-
-namespace ShoppingCart.Web.Helper
+﻿namespace ShoppingCart.Web.Helper
 {
-    public class FileUpload
+    public static class FileUpload
     {
-        private readonly IWebHostEnvironment _environment;
-
-        public FileUpload(IWebHostEnvironment environment)
-        {
-            _environment = environment;
-        }
-
-        public string UploadFile(IFormFile file)
+        public static string UploadFile(this IWebHostEnvironment environment, IFormFile file)
         {
             string fileName = null;
 
             if (file != null)
             {
-                string uploadDir = Path.Combine(_environment.WebRootPath, "images");
+                string uploadDir = Path.Combine(environment.WebRootPath, "images");
                 fileName = Guid.NewGuid().ToString() + "-" + file.FileName;
                 string filePath = Path.Combine(uploadDir, fileName);
                 using (var fileStream = new FileStream(filePath, FileMode.Create))
@@ -29,11 +20,11 @@ namespace ShoppingCart.Web.Helper
             return fileName;
         }
 
-        public void DeleteFile(string fileName)
+        public static void DeleteFile(this IWebHostEnvironment environment, string fileName)
         {
             if (fileName != null)
             {
-                string filePath = Path.Combine(_environment.WebRootPath, "images", fileName);
+                string filePath = Path.Combine(environment.WebRootPath, "images", fileName);
 
                 if (File.Exists(filePath))
                 {
@@ -42,13 +33,13 @@ namespace ShoppingCart.Web.Helper
             }
         }
 
-        public string UpdateFile(string oldFileName, IFormFile newFile)
+        public static string UpdateFile(this IWebHostEnvironment environment, string oldFileName, IFormFile newFile)
         {
             // First: Delete the old file!
-            DeleteFile(oldFileName);
+            DeleteFile(environment, oldFileName);
 
             // Then: Add the new file!
-            return UploadFile(newFile);
+            return UploadFile(environment, newFile);
         }
     }
 }

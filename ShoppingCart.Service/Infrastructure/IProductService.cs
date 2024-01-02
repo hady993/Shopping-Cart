@@ -6,8 +6,8 @@ namespace ShoppingCart.Service.Infrastructure
     {
         List<Product> GetAllProducts();
         Product GetProductById(int id);
-        void CreateProduct(Product product);
-        void EditProduct(Product product);
+        void CreateProduct(Product product, IEnumerable<int> categories);
+        void EditProduct(Product product, IEnumerable<int> categories);
         void DeleteProduct(Product product);
     }
 }

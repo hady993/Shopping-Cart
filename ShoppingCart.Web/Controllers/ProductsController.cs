@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using ShoppingCart.DataAccess.Model;
-using ShoppingCart.Repository.Infrastructure;
+using ShoppingCart.Service.Infrastructure;
 using ShoppingCart.Web.Helper;
 using ShoppingCart.Web.ViewModels.ProductViewModels;
 
@@ -10,13 +10,15 @@ namespace ShoppingCart.Web.Controllers
 {
     public class ProductsController : Controller
     {
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly ICategoryService _categoryService;
+        private readonly IProductService _productService;
         private IMapper _mapper;
         private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public ProductsController(IUnitOfWork unitOfWork, IMapper mapper, IWebHostEnvironment webHostEnvironment)
+        public ProductsController(ICategoryService categoryService, IProductService productService, IMapper mapper, IWebHostEnvironment webHostEnvironment)
         {
-            _unitOfWork = unitOfWork;
+            _categoryService = categoryService;
+            _productService = productService;
             _mapper = mapper;
             _webHostEnvironment = webHostEnvironment;
         }
@@ -24,7 +26,7 @@ namespace ShoppingCart.Web.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            var productList = _unitOfWork.ProductRepository.GetAllProducts();
+            var productList = _productService.GetAllProducts();
             var mappedProducts = _mapper.Map<List<ProductViewModel>>(productList);
             return View(mappedProducts);
         }
@@ -32,7 +34,7 @@ namespace ShoppingCart.Web.Controllers
         [HttpGet]
         public IActionResult Details(int id)
         {
-            var singleProduct = _unitOfWork.ProductRepository.GetProductById(id);
+            var singleProduct = _productService.GetProductById(id);
             var mappedProduct = _mapper.Map<ProductDetailViewModel>(singleProduct);
             return View(mappedProduct);
         }
@@ -41,7 +43,7 @@ namespace ShoppingCart.Web.Controllers
         public IActionResult Create()
         {
             CreateProductViewModel vm = new CreateProductViewModel();
-            vm.Categories = _unitOfWork.CategoryRepository.GetAllCategories().Select(x => new SelectListItem()
+            vm.Categories = _categoryService.GetAllCategories().Select(x => new SelectListItem()
             {
                 Text = x.Name,
                 Value = x.Id.ToString()
@@ -52,9 +54,8 @@ namespace ShoppingCart.Web.Controllers
         [HttpPost]
         public IActionResult Create(CreateProductViewModel vm)
         {
-            FileUpload fileUpload = new FileUpload(_webHostEnvironment);
             var selectedCategories = vm.Categories.Where(x => x.Selected).Select(x => x.Value).Select(int.Parse);
-            string ImageFile = fileUpload.UploadFile(vm.ProductImage);
+            string ImageFile = _webHostEnvironment.UploadFile(vm.ProductImage);
             var product = new ProductPostViewModel
             {
                 Name = vm.Name,
@@ -63,16 +64,14 @@ namespace ShoppingCart.Web.Controllers
                 ProductImage = ImageFile
             };
             var mappedProduct = _mapper.Map<Product>(product);
-            _unitOfWork.ProductRepository.InsertProduct(mappedProduct, selectedCategories);
-            _unitOfWork.Save();
+            _productService.CreateProduct(mappedProduct, selectedCategories);
             return RedirectToAction("Index", "Products");
         }
 
         [HttpGet]
         public IActionResult Edit(int id)
         {
-            var product = _unitOfWork.ProductRepository.GetProductById(id);
-            FileUpload fileUpload = new FileUpload(_webHostEnvironment);
+            var product = _productService.GetProductById(id);
             EditProductViewModel vm = new EditProductViewModel
             {
                 Id = id,
@@ -80,7 +79,7 @@ namespace ShoppingCart.Web.Controllers
                 Price = product.Price,
                 Description = product.Description
             };
-            vm.Categories = _unitOfWork.CategoryRepository.GetAllCategories().Select(x => new SelectListItem
+            vm.Categories = _categoryService.GetAllCategories().Select(x => new SelectListItem
             {
                 Text = x.Name,
                 Value = x.Id.ToString(),
@@ -96,7 +95,7 @@ namespace ShoppingCart.Web.Controllers
             if (!ModelState.IsValid)
             {
                 // If model validation fails, return to the edit view with validation errors
-                vm.Categories = _unitOfWork.CategoryRepository.GetAllCategories().Select(x => new SelectListItem
+                vm.Categories = _categoryService.GetAllCategories().Select(x => new SelectListItem
                 {
                     Text = x.Name,
                     Value = x.Id.ToString(),
@@ -107,9 +106,8 @@ namespace ShoppingCart.Web.Controllers
             }
 
             // If the edit succeeded!
-            FileUpload fileUpload = new FileUpload(_webHostEnvironment);
-            string oldImgPath = _unitOfWork.ProductRepository.GetProductById(vm.Id).ProductImage;
-            string newImageFile = fileUpload.UpdateFile(oldImgPath, vm.ProductImage);
+            string oldImgPath = _productService.GetProductById(vm.Id).ProductImage;
+            string newImageFile = _webHostEnvironment.UpdateFile(oldImgPath, vm.ProductImage);
 
             var selectedCategories = vm.Categories.Where(x => x.Selected).Select(x => x.Value).Select(int.Parse);
             var product = new EditProductPostViewModel
@@ -123,8 +121,7 @@ namespace ShoppingCart.Web.Controllers
             var updatedProduct = _mapper.Map<Product>(product);
 
             updatedProduct.ProductImage = newImageFile;
-            _unitOfWork.ProductRepository.UpdateProduct(updatedProduct, selectedCategories);
-            _unitOfWork.Save();
+            _productService.EditProduct(updatedProduct, selectedCategories);
 
             return RedirectToAction("Index", "Products");
         }
@@ -132,7 +129,7 @@ namespace ShoppingCart.Web.Controllers
         [HttpGet]
         public IActionResult Delete(int id)
         {
-            var product = _unitOfWork.ProductRepository.GetProductById(id);
+            var product = _productService.GetProductById(id);
             var mappedProduct = _mapper.Map<DeleteProductViewModel>(product);
             return View(mappedProduct);
         }
@@ -140,15 +137,13 @@ namespace ShoppingCart.Web.Controllers
         [HttpPost]
         public IActionResult Delete(DeleteProductViewModel vm)
         {
-            var product = _unitOfWork.ProductRepository.GetProductById(vm.Id);
+            var product = _productService.GetProductById(vm.Id);
 
             // To delete product's image!
-            FileUpload file = new FileUpload(_webHostEnvironment);
-            file.DeleteFile(product.ProductImage);
+            _webHostEnvironment.DeleteFile(product.ProductImage);
 
             // To delete the product from db!
-            _unitOfWork.ProductRepository.DeleteProduct(product);
-            _unitOfWork.Save();
+            _productService.DeleteProduct(product);
 
             return RedirectToAction("Index", "Products");
         }

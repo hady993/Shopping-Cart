@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using ShoppingCart.DataAccess.Model;
 using ShoppingCart.Web.ViewModels.CategoryViewModels;
 using ShoppingCart.Web.ViewModels.ProductViewModels;

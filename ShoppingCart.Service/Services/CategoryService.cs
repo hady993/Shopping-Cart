@@ -15,27 +15,30 @@ namespace ShoppingCart.Service.Services
 
         public void CreateCategory(Category category)
         {
-            throw new NotImplementedException();
+            _unitOfWork.CategoryRepository.InsertCategory(category);
+            _unitOfWork.Save();
         }
 
         public void DeleteCategory(Category category)
         {
-            throw new NotImplementedException();
+            _unitOfWork.CategoryRepository.DeleteCategory(category);
+            _unitOfWork.Save();
         }
 
         public void EditCategory(Category category)
         {
-            throw new NotImplementedException();
+            _unitOfWork.CategoryRepository.UpdateCategory(category);
+            _unitOfWork.Save();
         }
 
         public List<Category> GetAllCategories()
         {
-            throw new NotImplementedException();
+            return _unitOfWork.CategoryRepository.GetAllCategories();
         }
 
         public Category GetCategoryById(int id)
         {
-            throw new NotImplementedException();
+            return _unitOfWork.CategoryRepository.GetCategoryById(id);
         }
     }
 }

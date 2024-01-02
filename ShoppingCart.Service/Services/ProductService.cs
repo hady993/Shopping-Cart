@@ -13,29 +13,32 @@ namespace ShoppingCart.Service.Services
             _unitOfWork = unitOfWork;
         }
 
-        public void CreateProduct(Product product)
+        public void CreateProduct(Product product, IEnumerable<int> categories)
         {
-            throw new NotImplementedException();
+            _unitOfWork.ProductRepository.InsertProduct(product, categories);
+            _unitOfWork.Save();
         }
 
         public void DeleteProduct(Product product)
         {
-            throw new NotImplementedException();
+            _unitOfWork.ProductRepository.DeleteProduct(product);
+            _unitOfWork.Save();
         }
 
-        public void EditProduct(Product product)
+        public void EditProduct(Product product, IEnumerable<int> categories)
         {
-            throw new NotImplementedException();
+            _unitOfWork.ProductRepository.UpdateProduct(product, categories);
+            _unitOfWork.Save();
         }
 
         public List<Product> GetAllProducts()
         {
-            throw new NotImplementedException();
+            return _unitOfWork.ProductRepository.GetAllProducts();
         }
 
         public Product GetProductById(int id)
         {
-            throw new NotImplementedException();
+            return _unitOfWork.ProductRepository.GetProductById(id);
         }
     }
 }
